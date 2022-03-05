@@ -1,0 +1,65 @@
+<script src='https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js'></script>
+<script>
+    const socket = io();
+
+    socket.on("id", function(data){
+        console.log("Nosso id é:", data)
+    })
+    socket.on("mensagem", function(data){
+        document.getElementById("content").innerHTML += "<br><strong>" + data.from + "</strong>: " + data.data
+        console.log("msg recebida", data)
+    })
+</script>
+
+<html>
+<head>
+    <title></title>
+    <style>
+        .chat{
+            width: 400px;
+            height: 400px;
+            background: rgba(0, 0, 0, .109)
+        }
+
+        .chat .content{
+            height: 370px;
+        }
+        .chat .utils{
+            height: 30px;
+            display: flex;
+        }
+        .chat .utils .value{
+            width: 370px;
+            margin: 0;
+        }
+        .chat .utils .btn{
+            width: 30px;
+            margin: 0;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="chat">
+        <div class="content" id="content">
+            O conteúdo vai aqui...
+        </div>
+        <div class="utils">
+            <input id="val" class="value" type="text" onkeypress="execkp(event)">
+            <input class="btn" type="button" value=">" onclick="exec()">
+        </div>
+    </div>
+    <script>
+        function execkp(e){
+            if(e.charCode == 13) exec()
+        }
+        function exec(){
+            let val = document.getElementById("val").value;
+            socket.emit("broadcast", val);
+            
+            document.getElementById("content").innerHTML += "<br><strong>Eu</strong>: " + val
+            document.getElementById("val").value = "";
+        }
+    </script>
+</body>
+</html>
